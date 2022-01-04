@@ -1,0 +1,15 @@
+aiohttp==3.7.4.post0
+async-timeout==3.0.1
+attrs==21.2.0
+certifi==2021.10.8
+chardet==4.0.0
+charset-normalizer==2.0.8
+idna==3.3
+multidict==5.2.0
+py-cord @ git+https://github.com/Pycord-Development/pycord@36d2cd55c38a2cbc9766f3920029b867531becc5
+PyYAML==6.0
+requests==2.26.0
+topggpy==1.4.0
+typing-extensions==3.10.0.2
+urllib3==1.26.7
+yarl==1.7.0
