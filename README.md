@@ -2,7 +2,7 @@
 <p align="center">
   <img src="https://cdn.discordapp.com/attachments/911217306611372112/927916463841497108/TYest-removebg-preview_1.png"/>
 </p>
-Fox Mail Support is open-source which u can use in your server just follow these steps :-\n
+Fox Mail Support is open-source bot which u can use in your server just follow these steps :-\n
 
 1. Install `python` if you don't already have it installed. then open your terminal and install `pycord` by typing `pip install -U git+https://github.com/Pycord-Development/pycord` in the console 
 2. Clone the repository or download the code.
