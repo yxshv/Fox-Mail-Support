@@ -22,6 +22,36 @@ async def on_ready():
 	await client.change_presence(status=discord.Status.online,activity=discord.Game("Dm to Contact Mods"))
 	client.add_view(Panel_View())
 
+@client.command()
+async def blacklist(ctx,who:discord.Member):
+	with open("blacklisted.json") as j:
+		data = json.load(j)
+
+	if who.id in data:
+		return await ctx.send(f"The user `who` is already blacklisted!")
+	else:
+		data.append(who.id)
+
+		with open('blacklisted.json', 'w') as j:
+			json.dump(data, j, indent=4)
+
+		return await ctx.send(f"Successfully blacklisted `who`")
+
+@client.command()
+async def unblacklist(ctx,who:discord.Member):
+	with open("blacklisted.json") as j:
+		data = json.load(j)
+
+	if who.id not in data:
+		return await ctx.send(f"The user `who` is not blacklisted!")
+	else:
+		data.pop(data.index(who.id))
+
+		with open('blacklisted.json', 'w') as j:
+			json.dump(data, j, indent=4)
+
+		return await ctx.send(f"Successfully Unblacklisted `who`")
+
 class Panel_View(discord.ui.View):
 	def __init__(self):
 		super().__init__(timeout=None)
@@ -88,6 +118,12 @@ async def on_message(msg):
 
 	if msg.author == client.user:
 		return
+
+	with open("blacklisted.json") as j:
+		data = json.load(j)
+
+		if msg.author.id in data:
+			return
 		
 	if msg.content.lower() == ".close":
 		
