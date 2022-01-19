@@ -5,7 +5,7 @@ import asyncio
 import datetime
 import config
 from discord.utils import get
-
+import os
 from discord import *
 from discord.ext import commands
 from discord.ext.commands import has_permissions, CheckFailure
@@ -89,6 +89,8 @@ class Panel_View(discord.ui.View):
 							await channel.delete()
 
 							opener = client.get_user(x['user_id'])
+							if not opener:
+								opener = await client.fetch_user(x['user_id'])
 						
 							await opener.send(f"`<< Thread Closed >>`\n>>> \nThank you for messaging Fox mail. Hope we answered your questions. If you have any more questions, feel free to DM us again!\n\nPlease note that your thread is now closed. If you message again, you will open another thread.")
 
@@ -136,6 +138,8 @@ async def on_message(msg):
 			yes = False
 
 			guild = client.get_guild(config.guild_id)
+			if not guild:
+				guild = await client.fetch_guild(config.guild_id)
 
 			for x in data:
 
@@ -150,8 +154,19 @@ async def on_message(msg):
 			if yes == True:
 				
 				ticket = guild.get_channel(x['ticket_id'])
-
-				await ticket.send(f"**{msg.author.name}:** {msg.content}")
+				if not ticket:
+					ticket = await guild.fetch_channel(x['ticket_id'])
+				for i,each in enumerate(msg.attachments):
+					end = each.filename.split(".")
+					await each.save(f"{ticket.id}-{msg.id}-{i}.{end[1]}")
+				
+				files = []
+				for filename in os.listdir():
+					if filename.startswith(f"{ticket.id}-{msg.id}"):
+						files.append(discord.File(f"{filename}"))
+				await ticket.send(f"**{msg.author.name}:** {msg.content}",files=files)
+				for fil in files:
+					os.remove(fil.filename)
 
 			if yes == False:
 
@@ -161,6 +176,8 @@ async def on_message(msg):
 
 				for each in config.role_ids:
 					e = guild.get_role(each)
+					if not e:
+						e = await guild.fetch_roles(each)
 					await ticket.set_permissions(e, view_channel=True)
 				
 				new_ticket = {
@@ -184,7 +201,7 @@ async def on_message(msg):
 					ticket_e.set_footer(icon_url=client.user.avatar.url,text="Fox mail support")
 				except:
 					pass
-				await ticket.send("@here",embed=ticket_e,view=Panel_View())
+				await ticket.send("@here",embed=ticket_e,view=Panel_View(),files=msg.attachments)
 
 				data.append(new_ticket)
 
@@ -199,6 +216,9 @@ async def on_message(msg):
 			if msg.channel.id == x['ticket_id']:
 				
 				ticket_user = client.get_user(x['user_id'])
+
+				if not ticket_user:
+					ticket_user = await client.fetch_user(x['user_id'])
 
 				await ticket_user.send(f"{msg.content}")
 				
@@ -238,6 +258,8 @@ async def close(ctx):
 					await ctx.channel.delete()
 
 					opener = client.get_user(x['user_id'])
+					if not opener:
+						opener = await client.fetch_user(x['user_id'])
 				
 					await opener.send(f"`<< Thread Closed >>`\n>>> \nThank you for messaging Fox mail. Hope we answered your questions. If you have any more questions, feel free to DM us again!\n\nPlease note that your thread is now closed. If you message again, you will open another thread.")
 

@@ -1,0 +1,3 @@
+token='Your Bot token' # Enter your bot's token here
+guild_id = 0 # Enter the guild id of the server u want the mails to be sent to
+role_ids = [] # Enter the ids of the roles that should be able to view the tickets. You don't need to add the role what have Manage Channels or Adminstrator permissions because they can already see the tickets. You can have None (Leave it like []) or unlimited roles just add them with a comma :) 
